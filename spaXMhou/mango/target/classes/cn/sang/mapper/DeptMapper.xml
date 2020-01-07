@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//AAA" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.sang.mapper.DeptMapper">
+    <select id="getDeptVoList" resultType="cn.sang.pojo.VO.DeptVO">
+        SELECT `id` AS `value`,`name` AS label,`parent_id`
+        FROM `sys_dept`
+    </select>
+
+    <select id="getDeptListByName" resultType="cn.sang.pojo.Dept">
+        SELECT `id`,`name`,`parent_id`
+        FROM `sys_dept`
+        <where>
+            <if test="name!=null and name=''">
+                name like concat('%',#{name},'%')
+            </if>
+        </where>
+        LIMIT #{PageNo},#{PageSize}
+    </select>
+
+    <select id="getDeptCount" resultType="int">
+        SELECT count(1)
+        FROM `sys_dept`
+        <where>
+            <if test="name!=null and name=''">
+                name like concat('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+
+    <delete id="DelDept">
+        delete from `sys_dept` where id=#{id}
+    </delete>
+
+    <update id="UpdDept">
+        UPDATE `sys_dept` SET `name`=#{name} ,`parent_id`= #{parent_id},`last_update_by`=#{last_update_by} ,`last_update_time`= #{last_update_time}  where id=#{id}
+    </update>
+
+    <insert id="InsDept">
+        insert `sys_dept`(`name`,`parent_id`,`create_by`,`create_time`)
+        value (#{name},#{parent_id},#{create_by},#{create_time})
+    </insert>
+</mapper>

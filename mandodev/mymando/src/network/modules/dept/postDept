@@ -1,0 +1,11 @@
+/*新增用户信息*/
+import {request} from '../../request'
+export  const  PostDept=(url,{id,name,parent_id})=>{
+  return request({
+    url,
+    method:'post',
+    params:{
+      id,name,parent_id
+    }
+  })
+}

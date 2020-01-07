@@ -1,0 +1,11 @@
+/*新增用户信息*/
+import {request} from '../../request'
+export  const  PutRole=(url,{id,name,remark})=>{
+  return request({
+    url,
+    method:'put',
+    params:{
+      id,name,remark
+    }
+  })
+}

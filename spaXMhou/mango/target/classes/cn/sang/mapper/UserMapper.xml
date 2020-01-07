@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//AAA" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.sang.mapper.UserMapper">
+    <select id="loadUserByUsername" resultType="cn.sang.pojo.Sys_User">
+        SELECT * FROM `sys_user` WHERE `name` = #{name}
+    </select>
+    <select id="loadUserAuth" resultType="int">
+        SELECT id FROM `sys_user` WHERE `name` = #{name} and `password`=#{password}
+    </select>
+    <select id="getUserRolesByUid" resultType="cn.sang.pojo.Sys_Role">
+        select * from `sys_role` r,`sys_user_role` ur where r.id=ur.role_id and user_id=#{id}
+    </select>
+    <select id="getSysUserList" resultType="cn.sang.pojo.Sys_User">
+        SELECT u.* ,d.name AS deptname,r.name AS rolename,r.id AS role_id
+        from `sys_user` u, `sys_dept` d,`sys_role` r,`sys_user_role` ur
+        <where>
+            u.id=ur.`user_id` and r.id=ur.`role_id`and d.id=u.`dept_id`
+            <if test="name!=null and name!=''">
+                and u.`name` like concat('%',#{name},'%')
+            </if>
+        </where>
+        LIMIT #{PageNo},#{PageSize}
+    </select>
+    <select id="getSysUserCount" resultType="int">
+        SELECT count(1)
+        FROM `sys_user` u, `sys_dept` d,`sys_role` r,`sys_user_role` ur
+        <where>
+            u.id=ur.`user_id` and r.id=ur.`role_id`and d.id=u.`dept_id`
+            <if test="name!=null and name!=''">
+              and  u.`name` like concat('%',#{name},'%');
+            </if>
+        </where>
+    </select>
+
+    <insert id="InsUser" keyProperty="id" useGeneratedKeys="true">
+        INSERT `sys_user`(`name`,`nick_name`,`avatar`,`password`,`salt`,`email`,`mobile`,`status`,`dept_id`,`create_by`,`create_time`,`last_update_by`,`last_update_time`,`del_flag`)
+        VALUE (#{name},#{nick_name},#{avatar},#{password},#{salt},#{email},#{mobile},#{status},#{dept_id},#{create_by},#{create_time},#{last_update_by},#{last_update_time},#{del_flag})
+    </insert>
+
+    <delete id="DelUser">
+        DELETE FROM sys_user where id=#{id}
+    </delete>
+
+    <update id="UpdUser">
+        update sys_user set `name`=#{name},nick_name=#{nick_name},avatar=#{avatar},password=#{password},salt=#{salt},email=#{email},mobile=#{mobile},status=#{status},dept_id=#{dept_id},last_update_by=#{last_update_by},last_update_time=#{last_update_time},del_flag=#{del_flag} where id=#{id}
+    </update>
+
+    <insert id="Sys_User_Role">
+        INSERT `sys_user_role`(`user_id`,`role_id`)
+        VALUE (#{userid},#{roleid})
+    </insert>
+</mapper>

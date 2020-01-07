@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//AAA" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.sang.mapper.RoleMapper">
+    <select id="getRoleList" resultType="cn.sang.pojo.Sys_Role">
+        SELECT *  FROM `sys_role`
+    </select>
+
+    <select id="getRoleListByName" resultType="cn.sang.pojo.Sys_Role">
+          SELECT *
+          FROM `sys_role`
+          <where>
+              <if test="name!=null and name!=''">
+                  `name` like concat('%',#{name},'%')
+              </if>
+          </where>
+          LIMIT #{PageNo},#{PageSize}
+    </select>
+    <select id="getRoleCountByName" resultType="int">
+          SELECT count(1)
+          FROM `sys_role`
+          WHERE `name` like concat('%',#{name},'%')
+    </select>
+
+    <insert id="InsRole">
+        INSERT `sys_role`(`name`,`remark`,`create_by`,`create_time`)
+        VALUE (#{name},#{remark},#{create_by},#{create_time})
+    </insert>
+
+    <update id="UpdRole">
+         update `sys_role` set `name`= #{name},`remark`= #{remark},`last_update_by`= #{last_update_by},`last_update_time`= #{last_update_by} where id= #{id}
+    </update>
+
+    <delete id="DelRole">
+        delete from `sys_role` where id=#{id}
+    </delete>
+</mapper>

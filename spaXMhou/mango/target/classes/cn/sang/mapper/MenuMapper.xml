@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//AAA" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.sang.mapper.MenuMapper">
+    <select id="getRoleIdByUserId" resultType="int">
+        SELECT r.id
+        FROM `sys_user` u,`sys_user_role` ur,`sys_role` r
+        WHERE u.id=ur.user_id AND r.id=ur.role_id AND u.id=#{UserId}
+    </select>
+
+    <select id="getMenuParentByRoleId" resultType="cn.sang.pojo.VO.MenuVO">
+        select m.path,m.`name`,m.icon,m.component,m.id,m.parent_id
+        from `sys_menu` m,`sys_role` r,`sys_role_menu` mr
+        where m.id=mr.menu_id and r.id=mr.role_id and r.id=#{RoleId}
+    </select>
+
+    <select id="getMenuListAll" resultType="cn.sang.pojo.VO.MenuVO">
+        select m.path,m.`name`,m.icon,m.component,m.id,m.parent_id,m.id as `value`,m.`name` as  label
+        from `sys_menu` m,`sys_role` r,`sys_role_menu` mr
+        where m.id=mr.menu_id and r.id=mr.role_id and `type` != 2
+    </select>
+
+    <select id="getRole_idByMenuId" resultType="int">
+        SELECT role_id FROM `sys_role_menu` WHERE menu_id = #{id}
+    </select>
+
+    <select id="getMenuByParentId" resultType="cn.sang.pojo.VO.MenuVO">
+        SELECT m.path,m.`name`,m.icon,m.component,m.id
+        FROM `sys_menu` m,`sys_role` r,`sys_role_menu` mr
+        WHERE m.id=mr.menu_id AND r.id=mr.role_id AND r.id=#{RoleId} AND parent_id=#{ParentId}
+    </select>
+
+    <select id="getMenuListByName" resultType="cn.sang.pojo.Sys_Menu">
+        select `id`,`name`,`parent_id`,`url`,`type`,`icon`,`path`,`component`
+        from `sys_menu`
+        <where>
+            <if test="name!=null and name!=''">
+                name like concat('%',#{name},'%')
+            </if>
+        </where>
+        limit #{PageNo},#{PageSize}
+    </select>
+
+    <delete id="DelSys_Role_Menu">
+        delete from sys_role_menu where menu_id = #{menuid}
+    </delete>
+
+    <select id="getMenuCount" resultType="int">
+        select count(1)
+        from `sys_menu`
+        <where>
+            <if test="name!=null and name!=''">
+                name like concat('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+
+    <insert id="InsMenu" keyProperty="id" useGeneratedKeys="true">
+        insert `sys_menu`(`name`,`parent_id`,`path`,`component`,`create_by`,`create_time`)
+        value (#{name},#{parent_id},#{path},#{component},#{create_by},#{create_time})
+    </insert>
+
+    <insert id="Sys_Role_Menu">
+        INSERT `sys_role_menu`(`role_id`,`menu_id`,`create_by`,`create_time`)
+        VALUE (#{role_id},#{menu_id},#{create_by},#{create_time})
+    </insert>
+
+    <delete id="DelMenu">
+        delete from sys_menu where id=#{id}
+    </delete>
+
+    <update id="UpdMenu">
+        update sys_menu
+        set `name`=#{name},parent_id=#{parent_id},path=#{path},component=#{component},last_update_by=#{last_update_by},last_update_time=#{last_update_time}
+        where id=#{id}
+    </update>
+
+</mapper>
