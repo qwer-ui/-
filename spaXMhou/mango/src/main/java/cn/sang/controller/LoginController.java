@@ -17,7 +17,7 @@ public class LoginController {
     public Object loadUserAuth(String name,String password){
         Sys_User sys_user = userService.loadUserByUsername(name);
         if(sys_user==null){
-            return Returned.err("用户名或密码输入错误");
+            return Returned.err("用户名或密码输入错误杀杀杀");
         }
         if(!PasswordUtils.matches(sys_user.getSalt(),password,sys_user.getPassword())){
             return Returned.err("密码输入错误");
